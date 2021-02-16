@@ -10,7 +10,7 @@ interface PackageFile {
     [key: string]: any
 }
 
-async function readPackageFile(packagePath: string): Promise<PackageFile> {
+export async function readPackageFile(packagePath: string): Promise<PackageFile> {
     return await new Promise((resolve, reject) => {
         const packageFilePath = path.join(packagePath, 'package.json')
         core.debug(`Reading ${packageFilePath}…`)
