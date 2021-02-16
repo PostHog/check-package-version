@@ -1,11 +1,18 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Check Package Version'
+description: 'Check npm package version and whether it has been published yet'
+author: 'PostHog'
 inputs:
-    milliseconds: # change this
-        required: true
-        description: 'input description here'
-        default: 'default value if applicable'
+    path:
+        required: false
+        description: 'Path where the package can be found'
+        default: '.'
+outputs:
+  repo-version:
+    description: 'Version currently commited to the repo'
+  latest-published-version:
+    description: 'Latest published version'
+  is-unpublished-version:
+    description: '"true" if the repo version is an unpublished'
 runs:
     using: 'node12'
     main: 'dist/index.js'
