@@ -1,5 +1,5 @@
 name: 'build-test'
-on: # rebuild any PRs and main branch changes
+on:
     pull_request:
     push:
         branches:
@@ -7,18 +7,22 @@ on: # rebuild any PRs and main branch changes
             - 'releases/*'
 
 jobs:
-    build: # make sure build/ci work properly
-        runs-on: ubuntu-latest
+    build:
+        name: 'Build'
+        runs-on: ubuntu-20.04
         steps:
             - uses: actions/checkout@v2
-            - run: |
-                  npm install
-            - run: |
-                  npm run all
-    test: # make sure the action works on a clean machine without building
-        runs-on: ubuntu-latest
+            - run: yarn
+            - run: yarn all
+    test:
+        name: 'Test'
+        runs-on: ubuntu-20.04
         steps:
             - uses: actions/checkout@v2
-            - uses: ./
-              with:
-                  milliseconds: 1000
+            - id: version
+              uses: ./
+            - name: Install dependencies
+              if: steps.version.outputs.is-unpublished-version == 'true'
+              run: |
+                echo "Latest published verison: ${{ steps.version.outputs.latest-published-version }}"
+                echo "Repo version: ${{ steps.version.outputs.repo-version }}"
