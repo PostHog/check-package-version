@@ -7,15 +7,15 @@ inputs:
         description: 'Path where the package can be found'
         default: '.'
 outputs:
-  repo-version:
-    description: 'Version currently commited to the repo'
-  latest-published-version:
-    description: 'Latest published version'
-  is-unpublished-version:
-    description: '"true" if the repo version is an unpublished'
+    repo-version:
+        description: 'Version currently commited to the repo'
+    published-version:
+        description: 'Latest published version'
+    is-unpublished-version:
+        description: '"true" if the repo version is an unpublished, else "false"'
 runs:
     using: 'node12'
     main: 'dist/index.js'
 branding:
-  icon: 'loader'
-  color: 'orange'
+    icon: 'loader'
+    color: 'orange'
