@@ -30,7 +30,7 @@ async function run(): Promise<void> {
         const packagePath = core.getInput('path') || '.'
         const packageFile = await readPackageFile(packagePath)
         core.debug(`Fetching package ${packageFile.name} information from npm…`)
-        const packageNpm = await packageJson(packageFile.name, {allVersions: true})
+        const packageNpm = await packageJson(packageFile.name, { allVersions: true })
         const isUnpublishedVersion = Object.keys(packageNpm.versions).indexOf(packageFile.version) === -1
         core.setOutput('is-unpublished-version', isUnpublishedVersion.toString())
         core.setOutput('published-version', packageNpm['dist-tags'].latest)
