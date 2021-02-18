@@ -7,7 +7,7 @@ import * as fs from 'fs'
 interface PackageFile {
     name: string
     version: string
-    [key: string]: any
+    [key: string]: any // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export async function readPackageFile(packagePath: string): Promise<PackageFile> {
@@ -31,7 +31,7 @@ async function run(): Promise<void> {
         const packageFile = await readPackageFile(packagePath)
         core.debug(`Fetching package ${packageFile.name} information from npm…`)
         const packageNpm = await packageJson(packageFile.name, { allVersions: true })
-        const isUnpublishedVersion = Object.keys(packageNpm.versions).indexOf(packageFile.version) === -1
+        const isUnpublishedVersion = !Object.keys(packageNpm.versions).includes(packageFile.version)
         core.setOutput('is-unpublished-version', isUnpublishedVersion.toString())
         core.setOutput('published-version', packageNpm['dist-tags'].latest)
         core.setOutput('repo-version', packageFile.version)
