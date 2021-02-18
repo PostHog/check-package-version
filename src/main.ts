@@ -3,7 +3,7 @@ import packageJson from 'package-json'
 import * as path from 'path'
 import * as fs from 'fs'
 
-/** An incomplete representation of package.json. */
+/** An _incomplete_ representation of package.json. */
 interface PackageFile {
     name: string
     version: string
@@ -22,7 +22,7 @@ export async function readPackageFile(packagePath: string): Promise<PackageFile>
         } catch (err) {
             reject(err)
         }
-    }
+    })
 }
 
 async function run(): Promise<void> {
@@ -31,9 +31,9 @@ async function run(): Promise<void> {
         const packageFile = await readPackageFile(packagePath)
         core.debug(`Fetching package ${packageFile.name} information from npm…`)
         const packageNpm = await packageJson(packageFile.name, {allVersions: true})
-        const isUnpublishedVersion = !Object.keys(packageNpm.versions).includes(packageFile.version)
+        const isUnpublishedVersion = Object.keys(packageNpm.versions).indexOf(packageFile.version) === -1
         core.setOutput('is-unpublished-version', isUnpublishedVersion.toString())
-        core.setOutput('latest-published-version', packageNpm['dist-tags'].latest)
+        core.setOutput('published-version', packageNpm['dist-tags'].latest)
         core.setOutput('repo-version', packageFile.version)
     } catch (error) {
         core.setFailed(error.message)
