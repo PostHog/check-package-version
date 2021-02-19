@@ -13,7 +13,7 @@ GitHub action to compare `package.json` version between the current repo state a
 
 - name: Check package version
   id: cpv
-  uses: PostHog/check-package-version@v1
+  uses: PostHog/check-package-version@v2
 
 - name: Echo output
   run: |
@@ -63,7 +63,7 @@ jobs:
 
             - name: Check package version
               id: cpv
-              uses: PostHog/check-package-version@v1
+              uses: PostHog/check-package-version@v2
 
             - name: Echo versions
               run: |
