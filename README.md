@@ -42,7 +42,7 @@ The following outputs can be used by subsequent workflow steps.
 
 ### Workflow example
 
-Here's a simple example of a GitHub Actions workflow running `npm publish` automatically `package.json` version is bumped in the default branch:
+Here's a simple example of a GitHub Actions workflow running `npm publish` automatically when `package.json` version is bumped in the default branch:
 
 ```yml
 name: 'Autopublish'
