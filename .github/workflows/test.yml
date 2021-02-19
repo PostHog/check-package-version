@@ -25,4 +25,4 @@ jobs:
               if: steps.version.outputs.is-unpublished-version == 'true'
               run: |
                   echo "Latest published verison: ${{ steps.version.outputs.published-version }}"
-                  echo "Repo version: ${{ steps.version.outputs.repo-version }}"
+                  echo "Repo version: ${{ steps.version.outputs.committed-version }}"

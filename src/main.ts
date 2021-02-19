@@ -34,7 +34,7 @@ async function run(): Promise<void> {
         const isUnpublishedVersion = !Object.keys(packageNpm.versions).includes(packageFile.version)
         core.setOutput('is-unpublished-version', isUnpublishedVersion.toString())
         core.setOutput('published-version', packageNpm['dist-tags'].latest)
-        core.setOutput('repo-version', packageFile.version)
+        core.setOutput('committed-version', packageFile.version)
     } catch (error) {
         core.setFailed(error.message)
     }

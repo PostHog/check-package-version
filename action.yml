@@ -7,7 +7,7 @@ inputs:
         description: 'Path to the npm package'
         default: '.'
 outputs:
-  repo-version:
+  committed-version:
     description: 'Version now commited to the repo'
   published-version:
     description: 'Latest version published to npm, based on `dist-tags`'
