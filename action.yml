@@ -4,15 +4,15 @@ author: 'PostHog'
 inputs:
     path:
         required: false
-        description: 'Path where the package can be found'
+        description: 'Path to the npm package'
         default: '.'
 outputs:
-    repo-version:
-        description: 'Version currently commited to the repo'
-    published-version:
-        description: 'Latest published version'
-    is-unpublished-version:
-        description: '"true" if the repo version is an unpublished, else "false"'
+  repo-version:
+    description: 'Version now commited to the repo'
+  published-version:
+    description: 'Latest version published to npm, based on `dist-tags`'
+  is-unpublished-version:
+    description: 'Whether repo version is yet unpublished to npm (`"true"` or `"false"`)'
 runs:
     using: 'node12'
     main: 'dist/index.js'
