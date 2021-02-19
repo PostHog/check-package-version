@@ -3,7 +3,9 @@
 [![build-test status](https://github.com/PostHog/check-package-version/workflows/build-test/badge.svg)](https://github.com/actions/typescript-action/actions)
 [![MIT License](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 
-GitHub action to compare `package.json` version between the current repo state and [npm](https://npmjs.com). Useful for automatic publishing of new npm package versions with GitHub Actions. By [PostHog](https://posthog.com).
+GitHub action to compare `package.json` version between the current repo state and [npm](https://npmjs.com). Publish new versions of your npm packages hands-free!
+
+By [PostHog](https://posthog.com).
 
 ## Usage
 
