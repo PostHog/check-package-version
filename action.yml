@@ -7,12 +7,12 @@ inputs:
         description: 'Path to the npm package'
         default: '.'
 outputs:
-  committed-version:
-    description: 'Version now commited to the repo'
-  published-version:
-    description: 'Latest version published to npm, based on `dist-tags`'
-  is-new-version:
-    description: 'Whether repo version is yet new to npm (`"true"` or `"false"`)'
+    committed-version:
+        description: 'Version now commited to the repo'
+    published-version:
+        description: 'Latest version published to npm, based on `dist-tags`'
+    is-new-version:
+        description: 'Whether repo version is yet new to npm (`"true"` or `"false"`)'
 runs:
     using: 'node12'
     main: 'dist/index.js'

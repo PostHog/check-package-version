@@ -8,37 +8,37 @@ GitHub action to compare `package.json` version between the current repo state a
 ## Usage
 
 ```yml
-  - name: Check out repository
-    uses: actions/checkout@v2
+- name: Check out repository
+  uses: actions/checkout@v2
 
-  - name: Check package version
-    id: cpv
-    uses: PostHog/check-package-version@v1
+- name: Check package version
+  id: cpv
+  uses: PostHog/check-package-version@v1
 
-  - name: Echo output
-    run: |
-        echo "Committed version: ${{ steps.cpv.outputs.committed-version }}"
-        echo "Published version: ${{ steps.cpv.outputs.published-version }}"
-        echo "Is new version: ${{ steps.cpv.outputs.is-new-version }}"
+- name: Echo output
+  run: |
+      echo "Committed version: ${{ steps.cpv.outputs.committed-version }}"
+      echo "Published version: ${{ steps.cpv.outputs.published-version }}"
+      echo "Is new version: ${{ steps.cpv.outputs.is-new-version }}"
 ```
 
 ### Action inputs
 
 All inputs are **optional**. If not set, sensible defaults will be used.
 
-| Name | Description | Default |
-| --- | --- | --- |
-| `path` | Path to the npm package | `.` |
+| Name   | Description             | Default |
+| ------ | ----------------------- | ------- |
+| `path` | Path to the npm package | `.`     |
 
 ### Action outputs
 
 The following outputs can be used by subsequent workflow steps.
 
-| Name | Description |
-| --- | --- |
-| `committed-version` | Version now commited to the repo |
-| `published-version` | Latest version published to npm, based on `dist-tags` |
-| `is-new-version` | Whether repo version is new to npm (has not been published before), `'true'` or `'false'` |
+| Name                | Description                                                                               |
+| ------------------- | ----------------------------------------------------------------------------------------- |
+| `committed-version` | Version now commited to the repo                                                          |
+| `published-version` | Latest version published to npm, based on `dist-tags`                                     |
+| `is-new-version`    | Whether repo version is new to npm (has not been published before), `'true'` or `'false'` |
 
 ### Workflow example
 
@@ -58,25 +58,25 @@ jobs:
         name: Publish release if package.json version was bumped
         runs-on: ubuntu-20.04
         steps:
-          - name: Check out repository
-            uses: actions/checkout@v2
+            - name: Check out repository
+              uses: actions/checkout@v2
 
-          - name: Check package version
-            id: cpv
-            uses: PostHog/check-package-version@v1
+            - name: Check package version
+              id: cpv
+              uses: PostHog/check-package-version@v1
 
-          - name: Echo versions
-            run: |
-                echo "Committed version: ${{ steps.cpv.outputs.committed-version }}"
-                echo "Published version: ${{ steps.cpv.outputs.published-version }}"
+            - name: Echo versions
+              run: |
+                  echo "Committed version: ${{ steps.cpv.outputs.committed-version }}"
+                  echo "Published version: ${{ steps.cpv.outputs.published-version }}"
 
-          - name: Install dependencies
-            if: steps.cpv.outputs.is-new-version == 'true'
-            run: npm ci
+            - name: Install dependencies
+              if: steps.cpv.outputs.is-new-version == 'true'
+              run: npm ci
 
-          - name: Publish new version
-            if: steps.cpv.outputs.is-new-version == 'true'
-            run: npm publish
+            - name: Publish new version
+              if: steps.cpv.outputs.is-new-version == 'true'
+              run: npm publish
 ```
 
 ## Questions?
