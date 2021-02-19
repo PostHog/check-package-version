@@ -70,8 +70,8 @@ function run() {
             const packageFile = yield readPackageFile(packagePath);
             core.debug(`Fetching package ${packageFile.name} information from npm…`);
             const packageNpm = yield package_json_1.default(packageFile.name, { allVersions: true });
-            const isUnpublishedVersion = !Object.keys(packageNpm.versions).includes(packageFile.version);
-            core.setOutput('is-unpublished-version', isUnpublishedVersion.toString());
+            const isNewVersion = !Object.keys(packageNpm.versions).includes(packageFile.version);
+            core.setOutput('is-new-version', isNewVersion.toString());
             core.setOutput('published-version', packageNpm['dist-tags'].latest);
             core.setOutput('committed-version', packageFile.version);
         }
