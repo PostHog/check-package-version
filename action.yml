@@ -11,8 +11,8 @@ outputs:
     description: 'Version now commited to the repo'
   published-version:
     description: 'Latest version published to npm, based on `dist-tags`'
-  is-unpublished-version:
-    description: 'Whether repo version is yet unpublished to npm (`"true"` or `"false"`)'
+  is-new-version:
+    description: 'Whether repo version is yet new to npm (`"true"` or `"false"`)'
 runs:
     using: 'node12'
     main: 'dist/index.js'

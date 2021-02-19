@@ -22,7 +22,7 @@ jobs:
             - id: version
               uses: ./
             - name: Install dependencies
-              if: steps.version.outputs.is-unpublished-version == 'true'
+              if: steps.version.outputs.is-new-version == 'true'
               run: |
                   echo "Latest published verison: ${{ steps.version.outputs.published-version }}"
                   echo "Repo version: ${{ steps.version.outputs.committed-version }}"

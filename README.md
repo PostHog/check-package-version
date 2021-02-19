@@ -19,7 +19,7 @@ GitHub action to compare `package.json` version between the current repo state a
     run: |
         echo "Committed version: ${{ steps.cpv.outputs.committed-version }}"
         echo "Published version: ${{ steps.cpv.outputs.published-version }}"
-        echo "Is unpublished version: ${{ steps.cpv.outputs.is-unpublished-version }}"
+        echo "Is new version: ${{ steps.cpv.outputs.is-new-version }}"
 ```
 
 ### Action inputs
@@ -38,7 +38,7 @@ The following outputs can be used by subsequent workflow steps.
 | --- | --- |
 | `committed-version` | Version now commited to the repo |
 | `published-version` | Latest version published to npm, based on `dist-tags` |
-| `is-unpublished-version` | Whether repo version is yet unpublished to npm (`'true'` or `'false'`) |
+| `is-new-version` | Whether repo version is new to npm (has not been published before), `'true'` or `'false'` |
 
 ### Workflow example
 
@@ -71,11 +71,11 @@ jobs:
                 echo "Published version: ${{ steps.cpv.outputs.published-version }}"
 
           - name: Install dependencies
-            if: steps.cpv.outputs.is-unpublished-version == 'true'
+            if: steps.cpv.outputs.is-new-version == 'true'
             run: npm ci
 
           - name: Publish new version
-            if: steps.cpv.outputs.is-unpublished-version == 'true'
+            if: steps.cpv.outputs.is-new-version == 'true'
             run: npm publish
 ```
 
