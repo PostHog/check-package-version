@@ -13,7 +13,7 @@
         "package": "ncc build --source-map --license licenses.txt",
         "test": "jest",
         "all": "yarn build && yarn format && yarn lint && yarn package && yarn test",
-        "postinstall": "husky install"
+        "prepare": "husky install"
     },
     "repository": "github:PostHog/check-package-version",
     "keywords": [
