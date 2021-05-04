@@ -28,7 +28,7 @@
     "author": "PostHog <hey@posthog.com>",
     "license": "MIT",
     "dependencies": {
-        "@actions/core": "^1.2.6",
+        "@actions/core": "^1.2.7",
         "package-json": "^6.5.0"
     },
     "devDependencies": {
