@@ -29,7 +29,7 @@
     "license": "MIT",
     "dependencies": {
         "@actions/core": "^1.4.0",
-        "package-json": "^6.5.0"
+        "package-json": "^7.0.0"
     },
     "devDependencies": {
         "@types/jest": "^26.0.23",
