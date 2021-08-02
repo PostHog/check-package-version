@@ -32,7 +32,7 @@
         "package-json": "^7.0.0"
     },
     "devDependencies": {
-        "@types/jest": "^26.0.23",
+        "@types/jest": "^26.0.24",
         "@types/node": "^16.4.10",
         "@typescript-eslint/parser": "^4.28.5",
         "@vercel/ncc": "^0.28.6",
