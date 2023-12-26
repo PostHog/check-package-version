@@ -25,6 +25,7 @@ const retrivier = <T>(retrieve: () => Promise<T>): (() => Promise<T>) => {
     try {
         const input = {
             path: core.getInput('path').trim() || '.',
+            scope: core.getInput('scope').trim() || null,
             registry: core.getInput('registry').trim() || null,
             token: core.getInput('token').trim() || null,
             version: core.getInput('version').trim() || null,
@@ -98,21 +99,44 @@ const retrivier = <T>(retrieve: () => Promise<T>): (() => Promise<T>) => {
                 }
             }
 
-            core.debug('Retrieve the registry url from the npm config')
+            const __scope = await _scope()
 
-            return exec('npm config get registry')
+            core.debug('Retrieve the registry url for the scope ' + __scope + ' from the npm config')
+            return exec('npm config get @' + __scope + ':registry')
+        })
+
+        const _scope = retrivier(async () => {
+            if (input.scope) {
+                return input.scope
+            }
+
+            core.debug('Read the package name to retrieve the scope name')
+
+            const __name = await _name()
+            if (!__name.startsWith('@')) {
+                return null
+            }
+            const splitted = __name.split('/')
+
+            if (splitted.length <= 1) {
+                return null
+            }
+
+            return splitted[0].slice(1)
         })
 
         if (input.registry) {
             const __registry = await _registry()
-            core.debug('Set the registry to ' + __registry)
+            const __scope = await _scope()
 
-            await exec('npm config set registry ' + __registry)
+            core.debug('Set the registry to ' + __registry + ' on the scope ' + __scope)
+            await exec('npm config set @' + __scope + ':registry ' + __registry)
         }
 
         if (input.token) {
             const __registry = await _registry()
-            core.debug('Set the authentification token for the registry ' + __registry)
+            const __scope = await _scope()
+            core.debug('Set the authentification token for the registry ' + __registry + ' on the scope ' + __scope)
 
             const registryWithoutProtocol = __registry.replace(/(^\w+:|^)\/\//, '')
 
@@ -120,12 +144,13 @@ const retrivier = <T>(retrieve: () => Promise<T>): (() => Promise<T>) => {
         }
 
         const __package = await _name()
-
         const __version = await _version()
+
         core.setOutput('committed-version', await _commitedVersion())
 
         if (input.isLookingForTag) {
             try {
+                core.debug('Retrieve version of the package ' + __package + ' with the tag ' + __version)
                 const result = await packageJson(__package, {
                     allVersions: true,
                 })
@@ -156,6 +181,7 @@ const retrivier = <T>(retrieve: () => Promise<T>): (() => Promise<T>) => {
             }
         } else {
             try {
+                core.debug('Retrieve the last version of the package ' + __package + ' from the version ' + __version)
                 const result = await packageJson(__package, {
                     version: __version,
                 })

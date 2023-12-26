@@ -9,6 +9,9 @@ inputs:
     registry:
         required: false
         description: 'The npm registry URL. If provided, it sets the registry for the duration of the action.'
+    scope:
+        required: false
+        description: ''
     token:
         required: false
         description: 'The authentication token for the npm registry. If provided, it sets the authentication token for the registry.'
