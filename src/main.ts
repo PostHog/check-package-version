@@ -6,14 +6,20 @@ import * as util from 'util'
 
 const exec = util.promisify(require('child_process').exec)
 
-const retrivier = <T>(retrieve: () => Promise<T>): (() => Promise<T>) => {
+const retrivier = <T>(title: string, retrieve: () => Promise<T>, hidden = false): (() => Promise<T>) => {
     let retrieved: T | undefined = undefined
     return async () => {
         if (typeof retrieved !== 'undefined') {
             return retrieved
         }
 
-        const __retrieved = await retrieve()
+        const __retrieved = await core.group(title, retrieve)
+
+        if (hidden) {
+            core.debug('|=> Resulted <**HIDDEN**>')
+        } else {
+            core.debug('|=> Resulted ' + __retrieved)
+        }
 
         retrieved = __retrieved
 
@@ -33,37 +39,39 @@ const retrivier = <T>(retrieve: () => Promise<T>): (() => Promise<T>) => {
             isLookingForTag: core.getBooleanInput('look-for-tags'),
         }
 
-        const _package = retrivier(async () => {
+        const _path = retrivier('Retrieve the package.json path', async () => {
+            const stat = await fs.promises.stat(input.path)
+            if (stat.isFile()) {
+                return input.path
+            }
+
+            return Path.join(input.path, 'package.json')
+        })
+
+        const _package = retrivier('Retrieve the package.json content', async () => {
             core.debug('Retrieve the package.json path')
 
-            const path: string = await (async () => {
-                const stat = await fs.promises.stat(input.path)
-                if (stat.isFile()) {
-                    return input.path
-                }
-
-                return Path.join(input.path, 'package.json')
-            })()
+            const __path = await _path()
 
             core.debug("Read the package.json's file")
-            const buffer = await fs.promises.readFile(path)
+            const buffer = await fs.promises.readFile(__path)
 
             core.debug("Parse the package.json's file")
             return JSON.parse(buffer.toString())
         })
-        const _commitedVersion = retrivier(async () => {
+        const _commitedVersion = retrivier('Retrieve the committed version', async () => {
             if (!input.isLookingForTag) {
                 if (input.version) {
                     return input.version
                 }
             }
 
-            core.debug("Retrieve the package.json's version")
+            core.debug("Retrieve the version from the package.json's content")
             const __package = await _package()
 
             return __package.version
         })
-        const _version = retrivier(async () => {
+        const _version = retrivier('Retrieve the expecetd version', async () => {
             if (input.version) {
                 return input.version
             }
@@ -72,25 +80,26 @@ const retrivier = <T>(retrieve: () => Promise<T>): (() => Promise<T>) => {
                 return 'latest'
             }
 
+            core.debug('Retrieve the expected version from the commited version')
             return _commitedVersion()
         })
-        const _name = retrivier(async () => {
+        const _name = retrivier('Retrieve the package name', async () => {
             if (input.package) {
                 return input.package
             }
 
-            core.debug("Retrieve the package.json's name")
+            core.debug("Retrieve the name from the package.json's content")
             const __package = await _package()
 
             return __package.name
         })
 
-        const _registry = retrivier(async () => {
+        const _registry = retrivier('Retrieve the registry', async () => {
             if (input.registry) {
                 return input.registry
             }
 
-            core.debug('Read the package.json to retrieve the registry url')
+            core.debug("Try to retrieve the registry from the package.json's content")
 
             const __package = await _package()
             if (typeof __package.publishconfig === 'object') {
@@ -105,12 +114,12 @@ const retrivier = <T>(retrieve: () => Promise<T>): (() => Promise<T>) => {
             return exec('npm config get @' + __scope + ':registry')
         })
 
-        const _scope = retrivier(async () => {
+        const _scope = retrivier('Retrieve the scope', async () => {
             if (input.scope) {
                 return input.scope
             }
 
-            core.debug('Read the package name to retrieve the scope name')
+            core.debug('Retrieve the scope from the package name')
 
             const __name = await _name()
             if (!__name.startsWith('@')) {

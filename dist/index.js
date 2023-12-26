@@ -59,6 +59,7 @@ const retrivier = (retrieve) => {
     try {
         const input = {
             path: core.getInput('path').trim() || '.',
+            scope: core.getInput('scope').trim() || null,
             registry: core.getInput('registry').trim() || null,
             token: core.getInput('token').trim() || null,
             version: core.getInput('version').trim() || null,
@@ -117,17 +118,35 @@ const retrivier = (retrieve) => {
                     return __package.registry;
                 }
             }
-            core.debug('Retrieve the registry url from the npm config');
-            return exec('npm config get registry');
+            const __scope = yield _scope();
+            core.debug('Retrieve the registry url for the scope ' + __scope + ' from the npm config');
+            return exec('npm config get @' + __scope + ':registry');
+        }));
+        const _scope = retrivier(() => __awaiter(void 0, void 0, void 0, function* () {
+            if (input.scope) {
+                return input.scope;
+            }
+            core.debug('Read the package name to retrieve the scope name');
+            const __name = yield _name();
+            if (!__name.startsWith('@')) {
+                return null;
+            }
+            const splitted = __name.split('/');
+            if (splitted.length <= 1) {
+                return null;
+            }
+            return splitted[0].slice(1);
         }));
         if (input.registry) {
             const __registry = yield _registry();
-            core.debug('Set the registry to ' + __registry);
-            yield exec('npm config set registry ' + __registry);
+            const __scope = yield _scope();
+            core.debug('Set the registry to ' + __registry + ' on the scope ' + __scope);
+            yield exec('npm config set @' + __scope + ':registry ' + __registry);
         }
         if (input.token) {
             const __registry = yield _registry();
-            core.debug('Set the authentification token for the registry ' + __registry);
+            const __scope = yield _scope();
+            core.debug('Set the authentification token for the registry ' + __registry + ' on the scope ' + __scope);
             const registryWithoutProtocol = __registry.replace(/(^\w+:|^)\/\//, '');
             yield exec('npm config set ' + registryWithoutProtocol + '/:_authToken=' + input.token);
         }
@@ -136,6 +155,7 @@ const retrivier = (retrieve) => {
         core.setOutput('committed-version', yield _commitedVersion());
         if (input.isLookingForTag) {
             try {
+                core.debug('Retrieve version of the package ' + __package + ' with the tag ' + __version);
                 const result = yield package_json_1.default(__package, {
                     allVersions: true,
                 });
@@ -166,6 +186,7 @@ const retrivier = (retrieve) => {
         }
         else {
             try {
+                core.debug('Retrieve the last version of the package ' + __package + ' from the version ' + __version);
                 const result = yield package_json_1.default(__package, {
                     version: __version,
                 });
