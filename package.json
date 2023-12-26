@@ -29,6 +29,7 @@
     "license": "MIT",
     "dependencies": {
         "@actions/core": "^1.4.0",
+        "npm": "^10.2.5",
         "package-json": "^7.0.0"
     },
     "devDependencies": {
