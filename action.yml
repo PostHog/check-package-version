@@ -28,7 +28,7 @@ outputs:
         description: ''
     retrieved-version:
         description: ''
-    committed-version-free:
+    is-committed-version-free:
         description: ''
     result:
         description: ''

@@ -173,8 +173,8 @@ const retrivier = (title, retrieve, hidden = false) => {
         core.setOutput('is-published', 'true');
         core.setOutput('committed-version', __commitedVersion);
         core.setOutput('retrieved-version', output);
-        core.setOutput('committed-version-free', Object.keys(data.versions).includes(__commitedVersion));
-        core.setOutput('result', __operator);
+        core.setOutput('is-committed-version-free', Object.keys(data.versions).includes(__commitedVersion) ? "true" : "false");
+        core.setOutput('result', __operator ? "true" : "false");
     }
     catch (error) {
         if (error instanceof Error) {
