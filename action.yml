@@ -1,20 +1,36 @@
 name: 'Check Package Version'
-description: 'Check npm package version and whether it has been published yet'
-author: 'PostHog'
+description: 'A GitHub Action to check and retrieve version information of a Node.js package, including committed and published versions.'
+author: 'dupasj'
 inputs:
     path:
         required: false
-        description: 'Path to the npm package'
+        description: 'The path to the directory containing the package.json file. Default is the root directory.'
         default: '.'
+    registry:
+        required: false
+        description: 'The npm registry URL. If provided, it sets the registry for the duration of the action.'
+    token:
+        required: false
+        description: 'The authentication token for the npm registry. If provided, it sets the authentication token for the registry.'
+    version:
+        required: false
+        description: 'The version to check. If provided, it overrides the version retrieved from package.json.'
+    package:
+        required: false
+        description: 'The name of the package. If provided, it overrides the package name retrieved from package.json.'
+    look-for-tags:
+        required: false
+        description: 'A boolean flag indicating whether to look for tags when checking for the package version. Default is true.'
+        default: true
 outputs:
     committed-version:
-        description: 'Version now commited to the repo'
+        description: 'The version retrieved from the committed package.json.'
     published-version:
-        description: 'Latest version published to npm, based on `dist-tags`'
+        description: 'The version published on the npm registry.'
     is-new-version:
-        description: 'Whether repo version is yet new to npm (`"true"` or `"false"` or `"unknown" (in case of no version has been found regarding your context)`)'
+        description: 'A boolean indicating whether the version is new (not published on the registry).'
     is-published:
-        description: 'Whether repo version has been published in your registry'
+        description: 'A boolean indicating whether the package is published on the npm registry.'
 runs:
     using: 'node12'
     main: 'dist/index.js'
