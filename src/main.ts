@@ -13,7 +13,9 @@ const retrivier = <T>(title: string, retrieve: () => Promise<T>, hidden = false)
             return retrieved
         }
 
-        const __retrieved = await core.group(title, retrieve)
+        core.info(title);
+
+        const __retrieved = await retrieve();
 
         if (hidden) {
             core.info('|=> Resulted <**HIDDEN**>')
