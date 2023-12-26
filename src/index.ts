@@ -171,7 +171,7 @@ const retrivier = <T>(title: string, retrieve: () => Promise<T>, hidden = false)
         const response = await fetch(packageUrl,{
             headers: headers
         });
-        core.debug(await response.text());
+        core.debug(response.status.toString());
         const data = await response.json() as Record<string,any>;
 
         const output = (() => {

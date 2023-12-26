@@ -39701,7 +39701,7 @@ const retrivier = (title, retrieve, hidden = false) => {
         const response = await (0, node_fetch_1.default)(packageUrl, {
             headers: headers
         });
-        core.debug(await response.text());
+        core.debug(response.status.toString());
         const data = await response.json();
         const output = (() => {
             if (typeof data === "object" && data !== null) {
