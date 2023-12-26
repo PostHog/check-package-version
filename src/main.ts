@@ -119,18 +119,18 @@ const retrivier = <T>(retrieve: () => Promise<T>): (() => Promise<T>) => {
             await exec('npm config set ' + registryWithoutProtocol + '/:_authToken=' + input.token)
         }
 
-        const __package = await _package()
+        const __package = await _name()
 
         const __version = await _version()
         core.setOutput('committed-version', await _commitedVersion())
 
         if (input.isLookingForTag) {
             try {
-                const result = await packageJson(await _package(), {
+                const result = await packageJson(__package, {
                     allVersions: true,
                 })
 
-                core.setOutput('published', 'true')
+                core.setOutput('is-published', 'true')
 
                 const published = result['dist-tags'][__version]
                 const isNewVersion = !Object.keys(result.versions).includes(__version)
@@ -146,21 +146,21 @@ const retrivier = <T>(retrieve: () => Promise<T>): (() => Promise<T>) => {
                     core.setOutput('published-version', 'unknown')
 
                     if (e instanceof packageJson.PackageNotFoundError) {
-                        core.setOutput('published', 'false')
+                        core.setOutput('is-published', 'false')
                         core.setOutput('is-new-version', 'true')
                     } else {
-                        core.setOutput('published', 'true')
+                        core.setOutput('is-published', 'true')
                         core.setOutput('is-new-version', 'unknown')
                     }
                 }
             }
         } else {
             try {
-                const result = await packageJson(await _package(), {
+                const result = await packageJson(__package, {
                     version: __version,
                 })
 
-                core.setOutput('published', 'true')
+                core.setOutput('is-published', 'true')
 
                 const published = result['dist-tags'][__version]
                 const isNewVersion = !Object.keys(result.versions).includes(__version)
@@ -176,10 +176,10 @@ const retrivier = <T>(retrieve: () => Promise<T>): (() => Promise<T>) => {
                     core.setOutput('published-version', 'unknown')
 
                     if (e instanceof packageJson.PackageNotFoundError) {
-                        core.setOutput('published', 'false')
+                        core.setOutput('is-published', 'false')
                         core.setOutput('is-new-version', 'true')
                     } else {
-                        core.setOutput('published', 'true')
+                        core.setOutput('is-published', 'true')
                         core.setOutput('is-new-version', 'unknown')
                     }
                 } else {

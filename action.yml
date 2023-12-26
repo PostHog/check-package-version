@@ -12,7 +12,9 @@ outputs:
     published-version:
         description: 'Latest version published to npm, based on `dist-tags`'
     is-new-version:
-        description: 'Whether repo version is yet new to npm (`"true"` or `"false"`)'
+        description: 'Whether repo version is yet new to npm (`"true"` or `"false"` or `"unknown"`)'
+    is-published:
+        description: 'Whether repo version has been publish or not to your registry'
 runs:
     using: 'node12'
     main: 'dist/index.js'

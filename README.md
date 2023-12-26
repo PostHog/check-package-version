@@ -22,6 +22,7 @@ By [PostHog](https://posthog.com).
       echo "Committed version: ${{ steps.cpv.outputs.committed-version }}"
       echo "Published version: ${{ steps.cpv.outputs.published-version }}"
       echo "Is new version: ${{ steps.cpv.outputs.is-new-version }}"
+      echo "Has been Published: ${{ steps.cpv.outputs.is-published }}"
 ```
 
 ### Action inputs
@@ -36,11 +37,11 @@ All inputs are **optional**. If not set, sensible defaults will be used.
 
 The following outputs can be used by subsequent workflow steps.
 
-| Name                | Description                                                                               |
-| ------------------- | ----------------------------------------------------------------------------------------- |
-| `committed-version` | Version now commited to the repo                                                          |
-| `published-version` | Latest version published to npm, based on `dist-tags`                                     |
-| `is-new-version`    | Whether repo version is new to npm (has not been published before), `'true'` or `'false'` |
+| Name                | Description                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------ |
+| `committed-version` | Version now commited to the repo                                                                 |
+| `published-version` | Latest version published to npm, based on `dist-tags` or the last version from the given version |
+| `is-new-version`    | Whether repo version is new to npm (has not been published before), `'true'` or `'false'`        |
 
 ### Workflow example
 
