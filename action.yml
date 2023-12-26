@@ -21,19 +21,17 @@ inputs:
     package:
         required: false
         description: 'The name of the package. If provided, it overrides the package name retrieved from package.json.'
-    look-for-tags:
-        required: false
-        description: 'A boolean flag indicating whether to look for tags when checking for the package version. Default is true.'
-        default: true
 outputs:
-    committed-version:
-        description: 'The version retrieved from the committed package.json.'
-    published-version:
-        description: 'The version published on the npm registry.'
-    is-new-version:
-        description: 'A boolean indicating whether the version is new (not published on the registry).'
     is-published:
-        description: 'A boolean indicating whether the package is published on the npm registry.'
+        description: ''
+    committed-version:
+        description: ''
+    retrieved-version:
+        description: ''
+    committed-version-free:
+        description: ''
+    result:
+        description: ''
 runs:
     using: 'node12'
     main: 'dist/index.js'
