@@ -39565,7 +39565,7 @@ const core = __nccwpck_require__(2186);
 const Path = __nccwpck_require__(1017);
 const fs = __nccwpck_require__(7147);
 const util = __nccwpck_require__(3837);
-const semver_1 = __nccwpck_require__(1383);
+const semver = __nccwpck_require__(1383);
 const node_fetch_1 = __nccwpck_require__(1793);
 const getAuthToken = __nccwpck_require__(2968);
 const getRegistryUrl = __nccwpck_require__(5418);
@@ -39626,7 +39626,7 @@ const retrivier = (title, retrieve, hidden = false) => {
             return JSON.parse(buffer.toString());
         });
         const _commitedVersion = retrivier('Retrieve the committed version', async () => {
-            if (input.version && semver_1.default.valid(input.version)) {
+            if (input.version && semver.valid(input.version)) {
                 return input.version;
             }
             const __package = await _package();
@@ -39706,26 +39706,31 @@ const retrivier = (title, retrieve, hidden = false) => {
             if (__version in data['dist-tags']) {
                 return data['dist-tags'][__version];
             }
-            return semver_1.default.maxSatisfying(Object.keys(data.versions), __version);
+            return semver.maxSatisfying(Object.keys(data.versions), __version);
         })();
         const result = (() => {
-            if (__operator === "=" || __operator === "==" || __operator === "===") {
-                return semver_1.default.eq(output, __commitedVersion);
+            try {
+                if (__operator === "=" || __operator === "==" || __operator === "===") {
+                    return semver.eq(output, __commitedVersion);
+                }
+                if (__operator === "!=" || __operator === "!=" || __operator === "!==" || __operator === "<>") {
+                    return !semver.eq(output, __commitedVersion);
+                }
+                if (__operator === ">") {
+                    return semver.gt(output, __commitedVersion);
+                }
+                if (__operator === ">=") {
+                    return semver.gte(output, __commitedVersion);
+                }
+                if (__operator === "<") {
+                    return semver.lt(output, __commitedVersion);
+                }
+                if (__operator === "<=") {
+                    return semver.lte(output, __commitedVersion);
+                }
             }
-            if (__operator === "!=" || __operator === "!=" || __operator === "!==" || __operator === "<>") {
-                return !semver_1.default.eq(output, __commitedVersion);
-            }
-            if (__operator === ">") {
-                return semver_1.default.gt(output, __commitedVersion);
-            }
-            if (__operator === ">=") {
-                return semver_1.default.gte(output, __commitedVersion);
-            }
-            if (__operator === "<") {
-                return semver_1.default.lt(output, __commitedVersion);
-            }
-            if (__operator === "<=") {
-                return semver_1.default.lte(output, __commitedVersion);
+            catch (e) {
+                core.info(Object.keys(semver).join(",") + " " + e.message);
             }
             throw new Error("The operator " + __operator + " cannot be proceed");
         })();

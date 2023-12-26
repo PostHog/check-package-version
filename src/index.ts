@@ -2,7 +2,7 @@ import * as core from '@actions/core'
 import * as Path from 'path'
 import * as fs from 'fs'
 import * as util from 'util'
-import semver from 'semver'
+import * as semver from 'semver'
 import fetch from 'node-fetch'
 const getAuthToken = require('registry-auth-token')
 const getRegistryUrl = require('registry-auth-token/registry-url')
@@ -180,23 +180,27 @@ const retrivier = <T>(title: string, retrieve: () => Promise<T>, hidden = false)
             return semver.maxSatisfying(Object.keys(data.versions), __version);
         })()
         const result = (() => {
-            if (__operator === "=" || __operator === "==" || __operator === "==="){
-                return semver.eq(output,__commitedVersion);
-            }
-            if (__operator === "!=" || __operator === "!=" || __operator === "!==" || __operator === "<>"){
-                return !semver.eq(output,__commitedVersion);
-            }
-            if (__operator === ">"){
-                return semver.gt(output,__commitedVersion);
-            }
-            if (__operator === ">="){
-                return semver.gte(output,__commitedVersion);
-            }
-            if (__operator === "<"){
-                return semver.lt(output,__commitedVersion);
-            }
-            if (__operator === "<="){
-                return semver.lte(output,__commitedVersion);
+            try{
+                if (__operator === "=" || __operator === "==" || __operator === "==="){
+                    return semver.eq(output,__commitedVersion);
+                }
+                if (__operator === "!=" || __operator === "!=" || __operator === "!==" || __operator === "<>"){
+                    return !semver.eq(output,__commitedVersion);
+                }
+                if (__operator === ">"){
+                    return semver.gt(output,__commitedVersion);
+                }
+                if (__operator === ">="){
+                    return semver.gte(output,__commitedVersion);
+                }
+                if (__operator === "<"){
+                    return semver.lt(output,__commitedVersion);
+                }
+                if (__operator === "<="){
+                    return semver.lte(output,__commitedVersion);
+                }
+            }catch(e){
+                core.info(Object.keys(semver).join(",")+" "+e.message)
             }
 
             throw new Error("The operator "+__operator+" cannot be proceed");
