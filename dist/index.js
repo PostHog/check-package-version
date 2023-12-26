@@ -44,13 +44,19 @@ const Path = __importStar(__nccwpck_require__(5622));
 const fs = __importStar(__nccwpck_require__(5747));
 const util = __importStar(__nccwpck_require__(1669));
 const exec = util.promisify(__nccwpck_require__(3129).exec);
-const retrivier = (retrieve) => {
+const retrivier = (title, retrieve, hidden = false) => {
     let retrieved = undefined;
     return () => __awaiter(void 0, void 0, void 0, function* () {
         if (typeof retrieved !== 'undefined') {
             return retrieved;
         }
-        const __retrieved = yield retrieve();
+        const __retrieved = yield core.group(title, retrieve);
+        if (hidden) {
+            core.debug('|=> Resulted <**HIDDEN**>');
+        }
+        else {
+            core.debug('|=> Resulted ' + __retrieved);
+        }
         retrieved = __retrieved;
         return __retrieved;
     });
@@ -66,52 +72,54 @@ const retrivier = (retrieve) => {
             package: core.getInput('package').trim() || null,
             isLookingForTag: core.getBooleanInput('look-for-tags'),
         };
-        const _package = retrivier(() => __awaiter(void 0, void 0, void 0, function* () {
+        const _path = retrivier('Retrieve the package.json path', () => __awaiter(void 0, void 0, void 0, function* () {
+            const stat = yield fs.promises.stat(input.path);
+            if (stat.isFile()) {
+                return input.path;
+            }
+            return Path.join(input.path, 'package.json');
+        }));
+        const _package = retrivier('Retrieve the package.json content', () => __awaiter(void 0, void 0, void 0, function* () {
             core.debug('Retrieve the package.json path');
-            const path = yield (() => __awaiter(void 0, void 0, void 0, function* () {
-                const stat = yield fs.promises.stat(input.path);
-                if (stat.isFile()) {
-                    return input.path;
-                }
-                return Path.join(input.path, 'package.json');
-            }))();
+            const __path = yield _path();
             core.debug("Read the package.json's file");
-            const buffer = yield fs.promises.readFile(path);
+            const buffer = yield fs.promises.readFile(__path);
             core.debug("Parse the package.json's file");
             return JSON.parse(buffer.toString());
         }));
-        const _commitedVersion = retrivier(() => __awaiter(void 0, void 0, void 0, function* () {
+        const _commitedVersion = retrivier('Retrieve the committed version', () => __awaiter(void 0, void 0, void 0, function* () {
             if (!input.isLookingForTag) {
                 if (input.version) {
                     return input.version;
                 }
             }
-            core.debug("Retrieve the package.json's version");
+            core.debug("Retrieve the version from the package.json's content");
             const __package = yield _package();
             return __package.version;
         }));
-        const _version = retrivier(() => __awaiter(void 0, void 0, void 0, function* () {
+        const _version = retrivier('Retrieve the expecetd version', () => __awaiter(void 0, void 0, void 0, function* () {
             if (input.version) {
                 return input.version;
             }
             if (input.isLookingForTag) {
                 return 'latest';
             }
+            core.debug('Retrieve the expected version from the commited version');
             return _commitedVersion();
         }));
-        const _name = retrivier(() => __awaiter(void 0, void 0, void 0, function* () {
+        const _name = retrivier('Retrieve the package name', () => __awaiter(void 0, void 0, void 0, function* () {
             if (input.package) {
                 return input.package;
             }
-            core.debug("Retrieve the package.json's name");
+            core.debug("Retrieve the name from the package.json's content");
             const __package = yield _package();
             return __package.name;
         }));
-        const _registry = retrivier(() => __awaiter(void 0, void 0, void 0, function* () {
+        const _registry = retrivier('Retrieve the registry', () => __awaiter(void 0, void 0, void 0, function* () {
             if (input.registry) {
                 return input.registry;
             }
-            core.debug('Read the package.json to retrieve the registry url');
+            core.debug("Try to retrieve the registry from the package.json's content");
             const __package = yield _package();
             if (typeof __package.publishconfig === 'object') {
                 if (typeof __package.registry === 'string') {
@@ -122,11 +130,11 @@ const retrivier = (retrieve) => {
             core.debug('Retrieve the registry url for the scope ' + __scope + ' from the npm config');
             return exec('npm config get @' + __scope + ':registry');
         }));
-        const _scope = retrivier(() => __awaiter(void 0, void 0, void 0, function* () {
+        const _scope = retrivier('Retrieve the scope', () => __awaiter(void 0, void 0, void 0, function* () {
             if (input.scope) {
                 return input.scope;
             }
-            core.debug('Read the package name to retrieve the scope name');
+            core.debug('Retrieve the scope from the package name');
             const __name = yield _name();
             if (!__name.startsWith('@')) {
                 return null;
