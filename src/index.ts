@@ -4,6 +4,7 @@ import * as fs from 'fs'
 import * as util from 'util'
 import * as semver from 'semver'
 import fetch from 'node-fetch'
+import { version } from 'os'
 const getAuthToken = require('registry-auth-token')
 const getRegistryUrl = require('registry-auth-token/registry-url')
 
@@ -173,13 +174,28 @@ const retrivier = <T>(title: string, retrieve: () => Promise<T>, hidden = false)
         const data = await response.json() as Record<string,any>;
 
         const output = (() => {
-            if (__version in data['dist-tags']){
-                return data['dist-tags'][__version];
+            const dist = data['dist-tags'];
+            if (typeof dist === "object" && dist !== null){
+                if (__version in dist){
+                    const output = dist[__version];
+
+                    if (typeof output === "string"){
+                        return output;
+                    }
+                }
             }
 
-            return semver.maxSatisfying(Object.keys(data.versions), __version);
+            const versions = data['versions'];
+            if (typeof versions === "object" && versions !== null){
+                return semver.maxSatisfying(Object.keys(versions), __version);
+            }
+            
+            return null;
         })()
         const result = (() => {
+            if (output === null){
+                return "NOT_FOUND";
+            }
             try{
                 if (__operator === "=" || __operator === "==" || __operator === "==="){
                     return semver.eq(output,__commitedVersion);
@@ -208,7 +224,7 @@ const retrivier = <T>(title: string, retrieve: () => Promise<T>, hidden = false)
 
         core.setOutput('is-published', 'true')
         core.setOutput('committed-version', __commitedVersion);
-        core.setOutput('retrieved-version', output);
+        core.setOutput('retrieved-version', output === null ? "NOT_FOUND" : output);
         core.setOutput('is-committed-version-free', Object.keys(data.versions).includes(__commitedVersion) ? "true" : "false");
         core.setOutput('result', result ? "true" : "false");
     } catch (error) {
