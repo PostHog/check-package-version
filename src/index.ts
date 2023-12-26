@@ -42,7 +42,6 @@ const retrivier = <T>(title: string, retrieve: () => Promise<T>, hidden = false)
             token: core.getInput('token').trim() || null,
             version: core.getInput('version').trim() || null,
             package: core.getInput('package').trim() || null,
-            isLookingForTag: core.getBooleanInput('look-for-tags'),
         }
 
         const _token = retrivier('Retrieve the registry token', async () => {
