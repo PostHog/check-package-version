@@ -35,7 +35,7 @@ const retrivier = <T>(title: string, retrieve: () => Promise<T>, hidden = false)
 ;(async () => {
     try {
         const input = {
-            operator: core.getInput('operator').trim() || '.',
+            operator: core.getInput('operator').trim() || '>',
             path: core.getInput('path').trim() || '.',
             scope: core.getInput('scope').trim() || null,
             registry: core.getInput('registry').trim() || null,
@@ -152,7 +152,6 @@ const retrivier = <T>(title: string, retrieve: () => Promise<T>, hidden = false)
         const __name = await _name()
         const __version = await _version()
         const __registry = await _registry()
-        const __scope = await _scope()
         const __token = await _token()
         const __commitedVersion = await _commitedVersion();
         const __operator = await _operator();
@@ -200,14 +199,14 @@ const retrivier = <T>(title: string, retrieve: () => Promise<T>, hidden = false)
                 return semver.lte(output,__commitedVersion);
             }
 
-            throw new Error("The operator "+_operator+" cannot be proceed");
+            throw new Error("The operator "+__operator+" cannot be proceed");
         })()
 
         core.setOutput('is-published', 'true')
         core.setOutput('committed-version', __commitedVersion);
         core.setOutput('retrieved-version', output);
         core.setOutput('is-committed-version-free', Object.keys(data.versions).includes(__commitedVersion) ? "true" : "false");
-        core.setOutput('result', __operator ? "true" : "false");
+        core.setOutput('result', result ? "true" : "false");
     } catch (error) {
         if (error instanceof Error) {
             core.setFailed(error.message)

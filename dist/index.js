@@ -39591,7 +39591,7 @@ const retrivier = (title, retrieve, hidden = false) => {
 (async () => {
     try {
         const input = {
-            operator: core.getInput('operator').trim() || '.',
+            operator: core.getInput('operator').trim() || '>',
             path: core.getInput('path').trim() || '.',
             scope: core.getInput('scope').trim() || null,
             registry: core.getInput('registry').trim() || null,
@@ -39685,7 +39685,6 @@ const retrivier = (title, retrieve, hidden = false) => {
         const __name = await _name();
         const __version = await _version();
         const __registry = await _registry();
-        const __scope = await _scope();
         const __token = await _token();
         const __commitedVersion = await _commitedVersion();
         const __operator = await _operator();
@@ -39728,13 +39727,13 @@ const retrivier = (title, retrieve, hidden = false) => {
             if (__operator === "<=") {
                 return semver_1.default.lte(output, __commitedVersion);
             }
-            throw new Error("The operator " + _operator + " cannot be proceed");
+            throw new Error("The operator " + __operator + " cannot be proceed");
         })();
         core.setOutput('is-published', 'true');
         core.setOutput('committed-version', __commitedVersion);
         core.setOutput('retrieved-version', output);
         core.setOutput('is-committed-version-free', Object.keys(data.versions).includes(__commitedVersion) ? "true" : "false");
-        core.setOutput('result', __operator ? "true" : "false");
+        core.setOutput('result', result ? "true" : "false");
     }
     catch (error) {
         if (error instanceof Error) {
