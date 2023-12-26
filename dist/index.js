@@ -50,12 +50,13 @@ const retrivier = (title, retrieve, hidden = false) => {
         if (typeof retrieved !== 'undefined') {
             return retrieved;
         }
-        const __retrieved = yield core.group(title, retrieve);
+        core.info(title);
+        const __retrieved = yield retrieve();
         if (hidden) {
-            core.debug('|=> Resulted <**HIDDEN**>');
+            core.info('|=> Resulted <**HIDDEN**>');
         }
         else {
-            core.debug('|=> Resulted ' + __retrieved);
+            core.info('|=> Resulted ' + __retrieved);
         }
         retrieved = __retrieved;
         return __retrieved;
@@ -80,11 +81,11 @@ const retrivier = (title, retrieve, hidden = false) => {
             return Path.join(input.path, 'package.json');
         }));
         const _package = retrivier('Retrieve the package.json content', () => __awaiter(void 0, void 0, void 0, function* () {
-            core.debug('Retrieve the package.json path');
+            core.info('Retrieve the package.json path');
             const __path = yield _path();
-            core.debug("Read the package.json's file");
+            core.info("Read the package.json's file");
             const buffer = yield fs.promises.readFile(__path);
-            core.debug("Parse the package.json's file");
+            core.info("Parse the package.json's file");
             return JSON.parse(buffer.toString());
         }));
         const _commitedVersion = retrivier('Retrieve the committed version', () => __awaiter(void 0, void 0, void 0, function* () {
@@ -93,7 +94,7 @@ const retrivier = (title, retrieve, hidden = false) => {
                     return input.version;
                 }
             }
-            core.debug("Retrieve the version from the package.json's content");
+            core.info("Retrieve the version from the package.json's content");
             const __package = yield _package();
             return __package.version;
         }));
@@ -104,14 +105,14 @@ const retrivier = (title, retrieve, hidden = false) => {
             if (input.isLookingForTag) {
                 return 'latest';
             }
-            core.debug('Retrieve the expected version from the commited version');
+            core.info('Retrieve the expected version from the commited version');
             return _commitedVersion();
         }));
         const _name = retrivier('Retrieve the package name', () => __awaiter(void 0, void 0, void 0, function* () {
             if (input.package) {
                 return input.package;
             }
-            core.debug("Retrieve the name from the package.json's content");
+            core.info("Retrieve the name from the package.json's content");
             const __package = yield _package();
             return __package.name;
         }));
@@ -119,7 +120,7 @@ const retrivier = (title, retrieve, hidden = false) => {
             if (input.registry) {
                 return input.registry;
             }
-            core.debug("Try to retrieve the registry from the package.json's content");
+            core.info("Try to retrieve the registry from the package.json's content");
             const __package = yield _package();
             if (typeof __package.publishconfig === 'object') {
                 if (typeof __package.registry === 'string') {
@@ -127,14 +128,14 @@ const retrivier = (title, retrieve, hidden = false) => {
                 }
             }
             const __scope = yield _scope();
-            core.debug('Retrieve the registry url for the scope ' + __scope + ' from the npm config');
+            core.info('Retrieve the registry url for the scope ' + __scope + ' from the npm config');
             return exec('npm config get @' + __scope + ':registry');
         }));
         const _scope = retrivier('Retrieve the scope', () => __awaiter(void 0, void 0, void 0, function* () {
             if (input.scope) {
                 return input.scope;
             }
-            core.debug('Retrieve the scope from the package name');
+            core.info('Retrieve the scope from the package name');
             const __name = yield _name();
             if (!__name.startsWith('@')) {
                 return null;
@@ -148,13 +149,13 @@ const retrivier = (title, retrieve, hidden = false) => {
         if (input.registry) {
             const __registry = yield _registry();
             const __scope = yield _scope();
-            core.debug('Set the registry to ' + __registry + ' on the scope ' + __scope);
+            core.info('Set the registry to ' + __registry + ' on the scope ' + __scope);
             yield exec('npm config set @' + __scope + ':registry ' + __registry);
         }
         if (input.token) {
             const __registry = yield _registry();
             const __scope = yield _scope();
-            core.debug('Set the authentification token for the registry ' + __registry + ' on the scope ' + __scope);
+            core.info('Set the authentification token for the registry ' + __registry + ' on the scope ' + __scope);
             const registryWithoutProtocol = __registry.replace(/(^\w+:|^)\/\//, '');
             yield exec('npm config set ' + registryWithoutProtocol + '/:_authToken=' + input.token);
         }
@@ -163,7 +164,7 @@ const retrivier = (title, retrieve, hidden = false) => {
         core.setOutput('committed-version', yield _commitedVersion());
         if (input.isLookingForTag) {
             try {
-                core.debug('Retrieve version of the package ' + __package + ' with the tag ' + __version);
+                core.info('Retrieve version of the package ' + __package + ' with the tag ' + __version);
                 const result = yield package_json_1.default(__package, {
                     allVersions: true,
                 });
@@ -194,7 +195,7 @@ const retrivier = (title, retrieve, hidden = false) => {
         }
         else {
             try {
-                core.debug('Retrieve the last version of the package ' + __package + ' from the version ' + __version);
+                core.info('Retrieve the last version of the package ' + __package + ' from the version ' + __version);
                 const result = yield package_json_1.default(__package, {
                     version: __version,
                 });
