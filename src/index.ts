@@ -171,6 +171,16 @@ const retrivier = <T>(title: string, retrieve: () => Promise<T>, hidden = false)
         const response = await fetch(packageUrl,{
             headers: headers
         });
+
+        if (response.status === 404){
+            core.setOutput('is-published', 'true')
+            core.setOutput('committed-version', __commitedVersion);
+            core.setOutput('retrieved-version', "NOT_FOUND");
+            core.setOutput('is-committed-version-free', "true");
+            core.setOutput('result', "UNKNOWN");
+            return;
+        }
+
         core.debug(response.status.toString());
         const data = await response.json() as Record<string,any>;
 
