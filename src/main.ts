@@ -13,9 +13,9 @@ const retrivier = <T>(title: string, retrieve: () => Promise<T>, hidden = false)
             return retrieved
         }
 
-        core.info(title);
+        core.info(title)
 
-        const __retrieved = await retrieve();
+        const __retrieved = await retrieve()
 
         if (hidden) {
             core.info('|=> Resulted <**HIDDEN**>')
@@ -150,8 +150,9 @@ const retrivier = <T>(title: string, retrieve: () => Promise<T>, hidden = false)
             core.info('Set the authentification token for the registry ' + __registry + ' on the scope ' + __scope)
 
             const registryWithoutProtocol = __registry.replace(/(^\w+:|^)\/\//, '')
+            core.info(registryWithoutProtocol)
 
-            await exec('npm config set ' + registryWithoutProtocol + '/:_authToken=' + input.token)
+            await exec('npm config set ' + registryWithoutProtocol + '/:_authToken ' + input.token)
         }
 
         const __package = await _name()
