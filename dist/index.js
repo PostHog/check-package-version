@@ -39701,20 +39701,23 @@ const retrivier = (title, retrieve, hidden = false) => {
         const response = await (0, node_fetch_1.default)(packageUrl, {
             headers: headers
         });
+        core.debug(await response.text());
         const data = await response.json();
         const output = (() => {
-            const dist = data['dist-tags'];
-            if (typeof dist === "object" && dist !== null) {
-                if (__version in dist) {
-                    const output = dist[__version];
-                    if (typeof output === "string") {
-                        return output;
+            if (typeof data === "object" && data !== null) {
+                const dist = data['dist-tags'];
+                if (typeof dist === "object" && dist !== null) {
+                    if (__version in dist) {
+                        const output = dist[__version];
+                        if (typeof output === "string") {
+                            return output;
+                        }
                     }
                 }
-            }
-            const versions = data['versions'];
-            if (typeof versions === "object" && versions !== null) {
-                return semver.maxSatisfying(Object.keys(versions), __version);
+                const versions = data['versions'];
+                if (typeof versions === "object" && versions !== null) {
+                    return semver.maxSatisfying(Object.keys(versions), __version);
+                }
             }
             return null;
         })();
