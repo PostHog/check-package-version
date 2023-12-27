@@ -4,6 +4,7 @@ import * as fs from 'fs'
 import * as util from 'util'
 import * as semver from 'semver'
 import fetch from 'node-fetch'
+import { URL } from 'url'
 const getAuthToken = require('registry-auth-token')
 const getRegistryUrl = require('registry-auth-token/registry-url')
 
@@ -201,7 +202,7 @@ const retrieve = <T>(title: string, retrieve: () => Promise<T>, hidden = false):
             }
         }
 
-        const versions = (() => {
+        const versions: string[] | null = (() => {
             if (typeof data === 'object' && data !== null) {
                 const versions = data['versions']
                 if (typeof versions === 'object' && versions !== null) {
@@ -241,7 +242,7 @@ const retrieve = <T>(title: string, retrieve: () => Promise<T>, hidden = false):
         const output = (() => {
             if (tags !== null) {
                 if (__version in tags) {
-                    const output = tags[__version]
+                    const output = (tags as { [key: typeof __version]: unknown })[__version]
 
                     if (typeof output === 'string') {
                         return output
