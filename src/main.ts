@@ -94,6 +94,11 @@ const retrieve = <T>(title: string, retrieve: () => Promise<T>, hidden = false):
         })
         const _version = retrieve('Retrieve the expectd version', async () => {
             if (input.version) {
+                if (input.version === '~' || input.version === '^') {
+                    const __commitedVersion = await _commitedVersion()
+
+                    return input.version + __commitedVersion
+                }
                 return input.version
             }
 

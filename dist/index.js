@@ -224,7 +224,7 @@ const retrieve = (title, retrieve, hidden = false) => {
             return null;
         })();
         if (versions !== null) {
-            core.debug('The versions who has been published are: ' + Object.keys(versions).join(','));
+            core.debug('The versions who has been published are: ' + versions.join(','));
         }
         else {
             core.debug('No versions data has been found');
@@ -248,7 +248,7 @@ const retrieve = (title, retrieve, hidden = false) => {
                 }
             }
             if (versions !== null) {
-                return semver.maxSatisfying(Object.keys(versions), __version);
+                return semver.maxSatisfying(versions, __version);
             }
             return null;
         })();
@@ -277,7 +277,7 @@ const retrieve = (title, retrieve, hidden = false) => {
             throw new Error('The operator ' + __operator + ' cannot be proceed');
         })();
         if (versions !== null) {
-            core.setOutput('is-committed-version-free', Object.keys(versions).includes(__commitedVersion) ? 'false' : 'true');
+            core.setOutput('is-committed-version-free', versions.includes(__commitedVersion) ? 'false' : 'true');
         }
         else {
             core.setOutput('is-committed-version-free', 'UNKNOWN');
