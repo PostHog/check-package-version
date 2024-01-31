@@ -83,4 +83,4 @@ jobs:
 
 ## Questions?
 
-### [Join the PostHog Slack community.](posthog.com/slack)
+### [Join the PostHog community.](posthog.com/questions)
