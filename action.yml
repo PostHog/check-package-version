@@ -1,20 +1,80 @@
-name: 'Check Package Version'
-description: 'Check npm package version and whether it has been published yet'
+name: 'Retrieve Package Version'
+description: 'Retrieve information about npm package versions and/or check if the npm package has been published.'
 author: 'PostHog'
 inputs:
+    operator:
+        required: false
+        description: >
+            The operator used for version comparison between the retrieved version and the committed version.
+            The left side represents the retrieved version, and the right side represents the committed version.
+            The default value is ">" meaning the action's "result" output is true if RETRIEVED_VERSION > COMMITTED_VERSION.
+            If no versions data could be retrieved, the action result is "UNKNOWN".
+        default: '>'
+
     path:
         required: false
-        description: 'Path to the npm package'
-        default: '.'
+        description: >
+            The path to the `package.json` file or the directory containing the `package.json` file.
+
+    scope:
+        required: false
+        description: >
+            The scope used to retrieve version information. If not defined, the action will determine the scope from your package's name.
+
+    registry:
+        required: false
+        description: >
+            The registry URL for the npm package. If not defined, the action will determine the registry from the package's publish registry in `package.json`
+            or from the configured registry related to your scope. If no registry is found, the default value is "https://registry.npmjs.org".
+
+    token:
+        required: false
+        description: >
+            The Bearer authentication token for accessing your npm registry. If not defined, the action will attempt to fetch the token from your `.npmrc` configuration.
+
+    version:
+        required: false
+        description: >
+            The expected version/tags of the package to retrieve. The value can be a SemVer value or a tag.
+            The action will attempt to find the version from the tags; otherwise, the retrieved version will be the maximum version available based on your given SemVer value.
+            You can also provide the value '~' to retrieve the latest patched version of your committed version and '^' to retrieve the latest minor version of your committed version.
+            The default value is "latest".
+
+    package:
+        required: false
+        description: >
+            The name of the npm package. If provided, it overrides the package name retrieved from your `package.json`.
+
 outputs:
+    is-published:
+        description: >
+            Indicates whether the npm package has been published. 
+            If true, the package is published; if false, it has not been published.
+
     committed-version:
-        description: 'Version now commited to the repo'
-    published-version:
-        description: 'Latest version published to npm, based on `dist-tags`'
-    is-new-version:
-        description: 'Whether repo version is yet new to npm (`"true"` or `"false"`)'
+        description: >
+            The version of the npm package committed in the repository.
+            This value is retrieved from the `package.json` file.
+
+    retrieved-version:
+        description: >
+            The retrieved version of the npm package from the specified registry, matching your specified tags/SemVer.
+            If the package is not found, the value is set to "NOT_FOUND."
+
+    is-committed-version-free:
+        description: >
+            Indicates whether the committed version is available. 
+            If the value is "true," it means that the `npm run publish` command won't result an `EPUBLISHCONFLICT` error.
+            (This error occurs when you attempt to publish a version that already exists.)
+
+    result:
+        description: >
+            The result of the version comparison based on the provided operator.
+            If true, the comparison is successful; if false, the comparison fails.
+            If "UNKNOWN," no retrieved version could be found.
+
 runs:
-    using: 'node12'
+    using: 'node16'
     main: 'dist/index.js'
 branding:
     icon: 'loader'
