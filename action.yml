@@ -14,7 +14,7 @@ outputs:
     is-new-version:
         description: 'Whether repo version is yet new to npm (`"true"` or `"false"`)'
 runs:
-    using: 'node12'
+    using: 'node20'
     main: 'dist/index.js'
 branding:
     icon: 'loader'
