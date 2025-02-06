@@ -80,7 +80,3 @@ jobs:
               if: steps.cpv.outputs.is-new-version == 'true'
               run: npm publish
 ```
-
-## Questions?
-
-### [Join the PostHog community.](posthog.com/questions)
