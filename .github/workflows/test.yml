@@ -18,11 +18,14 @@ jobs:
         name: 'Test'
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v6
             - id: version
               uses: ./
             - name: Install dependencies
               if: steps.version.outputs.is-new-version == 'true'
+              env:
+                  PUBLISHED_VERSION: ${{ steps.version.outputs.published-version }}
+                  COMMITTED_VERSION: ${{ steps.version.outputs.committed-version }}
               run: |
-                  echo "Latest published verison: ${{ steps.version.outputs.published-version }}"
-                  echo "Repo version: ${{ steps.version.outputs.committed-version }}"
+                  echo "Latest published verison: $PUBLISHED_VERSION"
+                  echo "Repo version: $COMMITTED_VERSION"
