@@ -20,7 +20,7 @@ outputs:
     is-new-package:
         description: 'Whether repo package has not been published yet (`"true"` or `"false"`)'
 runs:
-    using: 'node20'
+    using: 'node24'
     main: 'dist/index.js'
 branding:
     icon: 'loader'
